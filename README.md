@@ -1,0 +1,2 @@
+# pngquant.swift
+PNG Quantizer
