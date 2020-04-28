@@ -88,7 +88,7 @@ public class PngQuantizer {
             indexes.append(UInt8(indexC!));
         }
 
-        if ( palette.count < 2^8 ) {
+        if ( palette.count < 256/*2^8*/ ) {
             return try setIndexedPixels(cgImage, indexes: indexes, palette: palette);
         }
         return try setRGBAPixels(cgImage, colors: rgbaColors);
@@ -163,7 +163,7 @@ public class PngQuantizer {
 //        let temporaryFilename = ProcessInfo().globallyUniqueString
 //        let temporaryFileURL = temporaryDirectoryURL.appendingPathComponent(temporaryFilename)
 //        let temporaryFile = temporaryFileURL.absoluteString
-        let temporaryFile = "\(NSTemporaryDirectory())/\(ProcessInfo().globallyUniqueString).png";
+        let temporaryFile = "\(NSTemporaryDirectory())/\(palette.count)_\(ProcessInfo().globallyUniqueString).png";
 
         let pngPalette = palette.map({
             return PNG.RGBA($0.red, $0.green, $0.blue, $0.alpha);
@@ -173,11 +173,11 @@ public class PngQuantizer {
         });
 
         var code = PNG.Properties.Format.Code.indexed8;
-        if palette.count <= 2^1 {
+        if palette.count <= 2/*2^1*/ {
             code = .indexed1;
-        } else if palette.count <= 2^2 {
+        } else if palette.count <= 4/*2^2*/ {
             code = .indexed2;
-        } else if palette.count <= 2^4 {
+        } else if palette.count <= 16/*2^4*/ {
             code = .indexed4;
         }
 
